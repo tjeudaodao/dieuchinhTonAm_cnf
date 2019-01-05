@@ -9,6 +9,6 @@ namespace DCTonam_cnf
     class dulieu
     {
         public string masp { get; set; }
-        public string soluong { get; set; }
+        public int soluong { get; set; }
     }
 }

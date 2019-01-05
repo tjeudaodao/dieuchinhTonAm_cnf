@@ -24,7 +24,7 @@
     <Grid>
        
            <StackPanel VerticalAlignment="Center">
-            <TextBlock HorizontalAlignment="Center" FontSize="20" Margin="20">Điều Chỉnh Tồn Âm</TextBlock>
+            <TextBlock HorizontalAlignment="Center" FontSize="20" Margin="20">Điều Chỉnh Tồn Âm Kho _ CNF</TextBlock>
             <StackPanel Orientation="Horizontal" Margin="0,5">
                 <TextBox
                     x:Name="txtTenFile"
@@ -33,7 +33,7 @@
                     AcceptsReturn="True"
                     TextWrapping="Wrap"
                     MinWidth="300"
-                    materialDesign:HintAssist.Hint="Ten file chon"/>
+                    materialDesign:HintAssist.Hint="Tên file đã chọn"/>
                 <Button Margin="5,0" x:Name="btnChonFile" Click="btnChonFile_Click">Chọn File Excel</Button>
                 <Button x:Name="btnNapData" Click="btnNapData_Click" IsEnabled="False">Nạp dữ liệu</Button>
             </StackPanel>
@@ -41,40 +41,39 @@
             <StackPanel Margin="10">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Check" VerticalAlignment="Center" Visibility="Hidden"
-                                             x:Name="checkKho01"/>
-                    <ProgressBar
-                      Style="{StaticResource MaterialDesignCircularProgressBar}"
-                      Value="35"
-                      IsIndeterminate="True" Visibility="Hidden"
-                        x:Name="loadKho01"/>          
-                    <TextBlock Text="Kho 01" VerticalAlignment="Center" Margin="0,5"></TextBlock>
+                                             x:Name="checkKho01"
+                                             Margin="5,0"/>
+                             
+                    <TextBlock Text="Kho Layout 01" VerticalAlignment="Center" Margin="0,5" x:Name="tenkho01"></TextBlock>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" >
                     <materialDesign:PackIcon Kind="Check" 
                                              VerticalAlignment="Center" 
                                              Visibility="Hidden"
-                                             x:Name="checkKho02"/>
-                    <ProgressBar
-                      Style="{StaticResource MaterialDesignCircularProgressBar}"
-                      Value="35"
-                      IsIndeterminate="True" 
-                        Visibility="Hidden"
-                        x:Name="loadKho02"/>
-                    <TextBlock Text="Kho 02" VerticalAlignment="Center" Margin="0,5"></TextBlock>
+                                             x:Name="checkKho02"
+                                             Margin="5,0"/>
+
+                    <TextBlock Text="Kho Stock 02" VerticalAlignment="Center" Margin="0,5" x:Name="tenkho02"></TextBlock>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" >
                     <materialDesign:PackIcon Kind="Check" 
                                              VerticalAlignment="Center" 
                                              Visibility="Hidden"
-                                             x:Name="checkKho05"/>
+                                             x:Name="checkKho05"
+                                             Margin="5,0"
+                                             />
+
+                    <TextBlock Text="Kho trung chuyển 05" VerticalAlignment="Center" Margin="0,5"  x:Name="tenkho05"></TextBlock>
+                </StackPanel>
+                <StackPanel>
                     <ProgressBar
                       Style="{StaticResource MaterialDesignCircularProgressBar}"
-                      Value="35"
-                      IsIndeterminate="True" 
+                      Value="0"
+                      IsIndeterminate="True"
                         Visibility="Hidden"
-                        x:Name="loadKho05"/>
-                    <TextBlock Text="Kho 05" VerticalAlignment="Center" Margin="0,5"></TextBlock>
+                        x:Name="loadNapdulieu"/>
                 </StackPanel>
+                    
                 <StackPanel Margin="10">
                     <Button x:Name="btnXuly" Click="btnXuly_Click">Xử lý dữ liệu</Button>
                 </StackPanel>
