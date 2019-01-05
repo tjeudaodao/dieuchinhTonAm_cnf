@@ -10,5 +10,11 @@ namespace DCTonam_cnf
     {
         public string masp { get; set; }
         public int soluong { get; set; }
+
+        public dulieu(string masp, int soluong)
+        {
+            this.masp = masp;
+            this.soluong = soluong;
+        }
     }
 }

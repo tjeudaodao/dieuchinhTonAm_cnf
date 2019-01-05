@@ -139,10 +139,7 @@ namespace DCTonam_cnf
                                 {
                                     continue;
                                 }
-                                dltam.Add(new dulieu {
-                                    masp = ws.Cells[i, 5].Value.ToString(),
-                                    soluong =Convert.ToInt32(ws.Cells[i, 19].Value.ToString())
-                                });
+                                dltam.Add(new dulieu(ws.Cells[i, 5].Value.ToString(), Convert.ToInt32(ws.Cells[i, 19].Value.ToString())));
                             }
                             if (makho == "01")
                             {
@@ -167,6 +164,10 @@ namespace DCTonam_cnf
         {
             dc02_01 = new List<dulieu>();
             var kq = kho01.Where(m => m.soluong < 0);
+            foreach (var item in kq)
+            {
+                Console.WriteLine(item.masp + " _ " + item.soluong);
+            }
             var kq2 = from a in (from k in kho02
                                  where k.soluong > 0
                                  select k)
@@ -180,26 +181,31 @@ namespace DCTonam_cnf
                          soluong2 = a.soluong,
                          soluong1 = b.soluong
                      };
+            Console.WriteLine("\nsoluong luc loc voi kho 02\n");
+            foreach (var item in kq2)
+            {
+                Console.WriteLine(item.masp + " _ " + item.soluong1 + " _ " + item.soluong2);
+            }
+            List<dulieu> kho011 = new List<dulieu>();
             foreach (var rs in kq2)
             {
                 if ((rs.soluong1*(-1)) < rs.soluong2)
                 {
-                    dc02_01.Add(new dulieu
-                    {
-                        masp = rs.masp,
-                        soluong = rs.soluong1 * (-1)
-                    });
+                    dc02_01.Add(new dulieu(rs.masp, rs.soluong1 * (-1)));
+                    kho011.Add(new dulieu(rs.masp, 0));
                 }
                 else if ((rs.soluong1 * (-1)) > rs.soluong2)
                 {
-                    dc02_01.Add(new dulieu
-                    {
-                        masp = rs.masp,
-                        soluong = rs.soluong2
-                    });
+                    dc02_01.Add(new dulieu(rs.masp, rs.soluong2));
+                    kho011.Add(new dulieu(rs.masp,rs.soluong1 + rs.soluong2));
                 }
-            }                   
-            foreach (var item in dc02_01)
+            }
+            foreach (var x in kho011)
+            {
+                var itemToChange = kq.First(d => d.masp == x.masp).soluong = x.soluong;
+            }
+            Console.WriteLine("\nSo lieu sau \n");                  
+            foreach (var item in kq)
             {
                 Console.WriteLine(item.masp + " _ " + item.soluong);
             }
