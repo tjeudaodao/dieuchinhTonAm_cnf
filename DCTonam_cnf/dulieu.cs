@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DCTonam_cnf
 {
-    class dulieu
+    public class dulieu
     {
         public string masp { get; set; }
         public int soluong { get; set; }

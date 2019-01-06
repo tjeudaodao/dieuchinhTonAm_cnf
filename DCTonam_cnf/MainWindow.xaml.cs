@@ -2,6 +2,7 @@
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -30,20 +31,39 @@ namespace DCTonam_cnf
         List<dulieu> kho05;
         List<dulieu> dc02_01;
         List<dulieu> dc05_01;
-
+        List<dulieu> dcnhap_01;
+        List<dulieu> dc01_02;
+        List<dulieu> dc05_02;
+        List<dulieu> dcnhap_02;
+        List<dulieu> dc01_05;
+        List<dulieu> dc02_05;
+        List<dulieu> dcnhap_05;
+        string ngaydieuchinh = string.Empty;
+        string folder_copy = string.Empty;
         public MainWindow()
         {
             InitializeComponent();
              kho01 = new List<dulieu>();
              kho02 = new List<dulieu>();
              kho05 = new List<dulieu>();
+            Directory.CreateDirectory(System.AppDomain.CurrentDomain.BaseDirectory + @"\File_Xuat_Excel");
         }
         public List<string> tenfiles { get; set; }
         public string getMakho(string nguon)
         {
+            string kq = string.Empty;
             string pat = @"\d{2}$";
-            Match ma = Regex.Match(nguon, pat);
-            return ma.Value.ToString();
+            string pat3 = @"\d{6}$";
+            if (Regex.IsMatch(nguon, pat3))
+            {
+                Match ma = Regex.Match(nguon, pat);
+                kq = ma.Value.ToString();
+            }
+            else
+            {
+                kq = "05";
+            }
+            return kq;
         }
         //check control kho hang
         public void checkControl(string makho, string ngayxuatton)
@@ -52,17 +72,17 @@ namespace DCTonam_cnf
             {
                 if (makho == "01")
                 {
-                    checkKho01.Visibility = Visibility.Visible;
+                    checkKho01.IsChecked = true;
                     tenkho01.Text = "Kho layout 01 _ Ngày: " + ngayxuatton; 
                 }
                 else if (makho == "02")
                 {
-                    checkKho02.Visibility = Visibility.Visible;
+                    checkKho02.IsChecked = true;
                     tenkho02.Text = "Kho stock 02 _ Ngày: " + ngayxuatton;
                 }
                 else if (makho == "05")
                 {
-                    checkKho05.Visibility = Visibility.Visible;
+                    checkKho05.IsChecked = true;
                     tenkho05.Text = "Kho trung chuyển 05 _ Ngày: " + ngayxuatton;
                 }
             }));
@@ -87,6 +107,8 @@ namespace DCTonam_cnf
         private void btnChonFile_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog chonfile = new OpenFileDialog();
+            lbthongbao.Visibility = Visibility.Hidden;
+            btnXuatexcel.Visibility = Visibility.Hidden;
             chonfile.Filter = "Mời các anh chọn file excel (*.xlsx)|*.xlsx";
             chonfile.Multiselect = true;
             if (chonfile.ShowDialog() == true)
@@ -113,7 +135,7 @@ namespace DCTonam_cnf
         }
         public void fc_napdulieu()
         {
-            string pat_1 = @"Kho CNF\d{6}";
+            string pat_1 = @"Kho CNF(\d{6}|\d{4})";
             string pat_2 = @"\d{2}/\d{2}/\d{4}";
             kho01.Clear();
             kho02.Clear();
@@ -131,11 +153,12 @@ namespace DCTonam_cnf
                             List<dulieu> dltam = new List<dulieu>();
                             Match laytenkho = Regex.Match(oA5, pat_1);
                             Match layngay = Regex.Match(oA5, pat_2);
+                            
                             string makho = getMakho(laytenkho.Value);
                             int dongcuoi = ws.Dimension.End.Row;
-                            for (int i = 9; i < (dongcuoi); i++)
+                            for (int i = 9; i < (dongcuoi + 1); i++)
                             {
-                                if (ws.Cells[i,19].Value.ToString() == "0" || ws.Cells[i, 5].Value == null)
+                                if (ws.Cells[i, 19].Value == null || ws.Cells[i,19].Value.ToString() == "0" ||  ws.Cells[i, 5].Value == null)
                                 {
                                     continue;
                                 }
@@ -154,6 +177,7 @@ namespace DCTonam_cnf
                                 kho05 = dltam;
                             }
                             checkControl(makho, layngay.Value);
+                            ngaydieuchinh = layngay.Value;
                         }
                     }
                 }
@@ -163,51 +187,253 @@ namespace DCTonam_cnf
         private void btnXuly_Click(object sender, RoutedEventArgs e)
         {
             dc02_01 = new List<dulieu>();
-            var kq = kho01.Where(m => m.soluong < 0);
-            foreach (var item in kq)
-            {
-                Console.WriteLine(item.masp + " _ " + item.soluong);
-            }
-            var kq2 = from a in (from k in kho02
+            dc05_01 = new List<dulieu>();
+            dcnhap_01 = new List<dulieu>();
+            dc01_02 = new List<dulieu>();
+            dc05_02 = new List<dulieu>();
+            dcnhap_02 = new List<dulieu>();
+            dc02_05 = new List<dulieu>();
+            dc01_05 = new List<dulieu>();
+            dcnhap_05 = new List<dulieu>();
+
+            #region dc ton am kho 01
+            var kq1 = kho01.Where(m => m.soluong < 0);
+            var kq1_2 = from a in (from k in kho02
                                  where k.soluong > 0
                                  select k)
-                     join b in (from x in kho01
-                                where x.soluong < 0
-                                select x)
-                     on a.masp equals b.masp
-                     select new
-                     {
-                         masp = a.masp,
-                         soluong2 = a.soluong,
-                         soluong1 = b.soluong
-                     };
-            Console.WriteLine("\nsoluong luc loc voi kho 02\n");
-            foreach (var item in kq2)
+                      join b in kq1
+                      on a.masp equals b.masp
+                      select new
+                      {
+                          masp = a.masp,
+                          soluong2 = a.soluong,
+                          soluong1 = b.soluong
+                      };
+            List<dulieu> kho012 = new List<dulieu>();
+            //dc tu 02 vao 01
+            foreach (var rs in kq1_2)
             {
-                Console.WriteLine(item.masp + " _ " + item.soluong1 + " _ " + item.soluong2);
-            }
-            List<dulieu> kho011 = new List<dulieu>();
-            foreach (var rs in kq2)
-            {
-                if ((rs.soluong1*(-1)) < rs.soluong2)
+                if ((rs.soluong1 * (-1)) < rs.soluong2)
                 {
                     dc02_01.Add(new dulieu(rs.masp, rs.soluong1 * (-1)));
-                    kho011.Add(new dulieu(rs.masp, 0));
+                    kho012.Add(new dulieu(rs.masp, 0));
                 }
                 else if ((rs.soluong1 * (-1)) > rs.soluong2)
                 {
                     dc02_01.Add(new dulieu(rs.masp, rs.soluong2));
-                    kho011.Add(new dulieu(rs.masp,rs.soluong1 + rs.soluong2));
+                    kho012.Add(new dulieu(rs.masp, rs.soluong1 + rs.soluong2));
                 }
             }
-            foreach (var x in kho011)
+            foreach (var x in kho012)
             {
-                var itemToChange = kq.First(d => d.masp == x.masp).soluong = x.soluong;
+                var itemToChange = kq1.First(d => d.masp == x.masp).soluong = x.soluong;
             }
-            Console.WriteLine("\nSo lieu sau \n");                  
-            foreach (var item in kq)
+            // dc tu 05 vao 01
+            var kq1_5 = from a in (from k in kho05
+                                  where k.soluong > 0
+                                  select k)
+                       join b in kq1
+                       on a.masp equals b.masp
+                       select new
+                       {
+                           masp = a.masp,
+                           soluong2 = a.soluong,
+                           soluong1 = b.soluong
+                       };
+            List<dulieu> kho015 = new List<dulieu>();
+            foreach (var rs in kq1_5)
             {
-                Console.WriteLine(item.masp + " _ " + item.soluong);
+                if ((rs.soluong1 * (-1)) < rs.soluong2)
+                {
+                    dc05_01.Add(new dulieu(rs.masp, rs.soluong1 * (-1)));
+                    kho015.Add(new dulieu(rs.masp, 0));
+                }
+                else if ((rs.soluong1 * (-1)) > rs.soluong2)
+                {
+                    dc05_01.Add(new dulieu(rs.masp, rs.soluong2));
+                    kho015.Add(new dulieu(rs.masp, rs.soluong1 + rs.soluong2));
+                }
+            }
+            foreach (var x in kho015)
+            {
+                var itemToChange = kq1.First(d => d.masp == x.masp).soluong = x.soluong;
+            }
+            foreach (var item in kq1)
+            {
+                dcnhap_01.Add(new dulieu(item.masp, item.soluong*(-1)));
+            }
+            #endregion
+            #region dc ton am kho 02
+            var kq2 = kho02.Where(m => m.soluong < 0);
+            var kq2_1 = from a in (from k in kho01
+                                   where k.soluong > 0
+                                   select k)
+                        join b in kq2
+                        on a.masp equals b.masp
+                        select new
+                        {
+                            masp = a.masp,
+                            soluong2 = a.soluong,
+                            soluong1 = b.soluong
+                        };
+            List<dulieu> kho021 = new List<dulieu>();
+            //dc tu 01 vao 02
+            foreach (var rs in kq2_1)
+            {
+                if ((rs.soluong1 * (-1)) < rs.soluong2)
+                {
+                    dc01_02.Add(new dulieu(rs.masp, rs.soluong1 * (-1)));
+                    kho021.Add(new dulieu(rs.masp, 0));
+                }
+                else if ((rs.soluong1 * (-1)) > rs.soluong2)
+                {
+                    dc01_02.Add(new dulieu(rs.masp, rs.soluong2));
+                    kho021.Add(new dulieu(rs.masp, rs.soluong1 + rs.soluong2));
+                }
+            }
+            foreach (var x in kho021)
+            {
+                var itemToChange = kq2.First(d => d.masp == x.masp).soluong = x.soluong;
+            }
+            // dc tu 05 vao 02
+            var kq2_5 = from a in (from k in kho05
+                                   where k.soluong > 0
+                                   select k)
+                        join b in kq2
+                        on a.masp equals b.masp
+                        select new
+                        {
+                            masp = a.masp,
+                            soluong2 = a.soluong,
+                            soluong1 = b.soluong
+                        };
+            List<dulieu> kho025 = new List<dulieu>();
+            foreach (var rs in kq2_5)
+            {
+                if ((rs.soluong1 * (-1)) < rs.soluong2)
+                {
+                    dc05_02.Add(new dulieu(rs.masp, rs.soluong1 * (-1)));
+                    kho025.Add(new dulieu(rs.masp, 0));
+                }
+                else if ((rs.soluong1 * (-1)) > rs.soluong2)
+                {
+                    dc05_02.Add(new dulieu(rs.masp, rs.soluong2));
+                    kho025.Add(new dulieu(rs.masp, rs.soluong1 + rs.soluong2));
+                }
+            }
+            foreach (var x in kho025)
+            {
+                var itemToChange = kq2.First(d => d.masp == x.masp).soluong = x.soluong;
+            }
+            //dc nhap kho 02
+            foreach (var item in kq2)
+            {
+                dcnhap_02.Add(new dulieu(item.masp, item.soluong * (-1)));
+            }
+            #endregion
+            #region dc ton am kho 05
+            var kq5 = kho05.Where(m => m.soluong < 0);
+            var kq5_1 = from a in (from k in kho01
+                                   where k.soluong > 0
+                                   select k)
+                        join b in kq5
+                        on a.masp equals b.masp
+                        select new
+                        {
+                            masp = a.masp,
+                            soluong2 = a.soluong,
+                            soluong1 = b.soluong
+                        };
+            List<dulieu> kho051 = new List<dulieu>();
+            //dc tu 01 vao 05
+            foreach (var rs in kq5_1)
+            {
+                if ((rs.soluong1 * (-1)) < rs.soluong2)
+                {
+                    dc01_05.Add(new dulieu(rs.masp, rs.soluong1 * (-1)));
+                    kho051.Add(new dulieu(rs.masp, 0));
+                }
+                else if ((rs.soluong1 * (-1)) > rs.soluong2)
+                {
+                    dc01_05.Add(new dulieu(rs.masp, rs.soluong2));
+                    kho051.Add(new dulieu(rs.masp, rs.soluong1 + rs.soluong2));
+                }
+            }
+            foreach (var x in kho051)
+            {
+                var itemToChange = kq5.First(d => d.masp == x.masp).soluong = x.soluong;
+            }
+            // dc tu 02 vao 05
+            var kq5_2 = from a in (from k in kho02
+                                   where k.soluong > 0
+                                   select k)
+                        join b in kq5
+                        on a.masp equals b.masp
+                        select new
+                        {
+                            masp = a.masp,
+                            soluong2 = a.soluong,
+                            soluong1 = b.soluong
+                        };
+            List<dulieu> kho052 = new List<dulieu>();
+            foreach (var rs in kq2_5)
+            {
+                if ((rs.soluong1 * (-1)) < rs.soluong2)
+                {
+                    dc02_05.Add(new dulieu(rs.masp, rs.soluong1 * (-1)));
+                    kho052.Add(new dulieu(rs.masp, 0));
+                }
+                else if ((rs.soluong1 * (-1)) > rs.soluong2)
+                {
+                    dc02_05.Add(new dulieu(rs.masp, rs.soluong2));
+                    kho052.Add(new dulieu(rs.masp, rs.soluong1 + rs.soluong2));
+                }
+            }
+            foreach (var x in kho052)
+            {
+                var itemToChange = kq5.First(d => d.masp == x.masp).soluong = x.soluong;
+            }
+            //dc nhap kho 05
+            foreach (var item in kq5)
+            {
+                dcnhap_05.Add(new dulieu(item.masp, item.soluong * (-1)));
+            }
+            #endregion
+            btnXuatexcel.Visibility = Visibility.Visible;
+        }
+        private void btnXuatexcel_Click(object sender, RoutedEventArgs e)
+        {
+            ngaydieuchinh = ngaydieuchinh.Replace("/", "-");
+            folder_copy = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\DC_ton_am_" + ngaydieuchinh;
+            Directory.CreateDirectory(folder_copy);
+            
+            xuatexcel(dc02_01, "02_01", ngaydieuchinh);
+            xuatexcel(dc05_01, "05_01", ngaydieuchinh);
+            xuatexcel(dcnhap_01, "nhap_01", ngaydieuchinh);
+            lbthongbao.Visibility = Visibility.Visible;
+            lbthongbao.Text = "Vừa xuất file tại đường dẫn: " + folder_copy;
+        }
+        //ham xuat excel
+        public void xuatexcel(List<dulieu> data, string tenfileout, string ngay)
+        {
+            using(ExcelPackage ex = new ExcelPackage())
+            {
+                using(ExcelWorksheet ws = ex.Workbook.Worksheets.Add("dc_ton_am_" + tenfileout))
+                {
+                    if (!data.Any())
+                    {
+                        return;
+                    }
+                    string duongdanfilegoc = System.AppDomain.CurrentDomain.BaseDirectory + @"\File_Xuat_Excel\" + "DC_Ton_Am_" + tenfileout + "_ngay_" + ngay + ".xlsx";
+                    ws.Cells["A2"].LoadFromCollection(data);
+                    ws.Column(1).AutoFit();
+                    if (File.Exists(duongdanfilegoc))
+                    {
+                        File.Delete(duongdanfilegoc);
+                    }
+                    ex.SaveAs(new FileInfo(duongdanfilegoc));
+                    File.Copy(duongdanfilegoc, folder_copy + @"\DC_Ton_Am_" + tenfileout + "_ngay_" + ngay + ".xlsx", true);
+                }
             }
         }
     }

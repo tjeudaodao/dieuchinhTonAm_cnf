@@ -13,7 +13,7 @@
          TextOptions.TextRenderingMode="Auto"
          Background="{DynamicResource MaterialDesignPaper}"
          FontFamily="{DynamicResource MaterialDesignFont}"
-        Title="Dieu chinh ton am _ CNF" MinHeight="400" MinWidth="600" Icon="poop_ZGv_icon.ico"
+        Title="Điều chình tồn âm _ CNF" MinHeight="500" MinWidth="900" Icon="poop_ZGv_icon.ico"
         >
     <Window.Resources>
         <Style TargetType="{x:Type StackPanel}">
@@ -39,32 +39,54 @@
             </StackPanel>
             <Separator Margin="10"></Separator>
             <StackPanel Margin="10">
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="Check" VerticalAlignment="Center" Visibility="Hidden"
-                                             x:Name="checkKho01"
-                                             Margin="5,0"/>
-                             
-                    <TextBlock Text="Kho Layout 01" VerticalAlignment="Center" Margin="0,5" x:Name="tenkho01"></TextBlock>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" >
-                    <materialDesign:PackIcon Kind="Check" 
-                                             VerticalAlignment="Center" 
-                                             Visibility="Hidden"
-                                             x:Name="checkKho02"
-                                             Margin="5,0"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <CheckBox
+                        Style="{StaticResource MaterialDesignCheckBox}"
+                        Margin="5"
+                        x:Name="checkKho01"
+                        Grid.Row="0" Grid.Column="0">
 
-                    <TextBlock Text="Kho Stock 02" VerticalAlignment="Center" Margin="0,5" x:Name="tenkho02"></TextBlock>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" >
-                    <materialDesign:PackIcon Kind="Check" 
-                                             VerticalAlignment="Center" 
-                                             Visibility="Hidden"
-                                             x:Name="checkKho05"
-                                             Margin="5,0"
-                                             />
+                    </CheckBox>
+                    <TextBlock Text="Kho Layout 01" 
+                               VerticalAlignment="Center" 
+                               Margin="0,5" 
+                               x:Name="tenkho01"
+                               Grid.Row="0" Grid.Column="1"></TextBlock>
+                    <CheckBox
+                        Style="{StaticResource MaterialDesignCheckBox}"
+                        Margin="5"
+                        x:Name="checkKho02"
+                        Grid.Row="1" Grid.Column="0">
 
-                    <TextBlock Text="Kho trung chuyển 05" VerticalAlignment="Center" Margin="0,5"  x:Name="tenkho05"></TextBlock>
-                </StackPanel>
+                    </CheckBox>
+                    <TextBlock Text="Kho Layout 02" 
+                               VerticalAlignment="Center" 
+                               Margin="0,5" 
+                               x:Name="tenkho02"
+                               Grid.Row="1" Grid.Column="1"></TextBlock>
+                    <CheckBox
+                        Style="{StaticResource MaterialDesignCheckBox}"
+                        Margin="5"
+                        x:Name="checkKho05"
+                        Grid.Row="2" Grid.Column="0">
+
+                    </CheckBox>
+                    <TextBlock Text="Kho trung chuyển 05" 
+                               VerticalAlignment="Center" 
+                               Margin="0,5" 
+                               x:Name="tenkho05"
+                               Grid.Row="2" Grid.Column="1"></TextBlock>
+                </Grid>
+                
                 <StackPanel>
                     <ProgressBar
                       Style="{StaticResource MaterialDesignCircularProgressBar}"
@@ -74,10 +96,17 @@
                         x:Name="loadNapdulieu"/>
                 </StackPanel>
                     
-                <StackPanel Margin="10">
+                <StackPanel Margin="8">
                     <Button x:Name="btnXuly" Click="btnXuly_Click">Xử lý dữ liệu</Button>
                 </StackPanel>
-                
+                <StackPanel Margin="5">
+                    <Button x:Name="btnXuatexcel" Click="btnXuatexcel_Click"
+                            Visibility="Hidden">Tạo file Excel</Button>
+                    <TextBlock x:Name="lbthongbao" 
+                           Visibility="Hidden" 
+                           Margin="10"
+                           HorizontalAlignment="Center"></TextBlock>
+                </StackPanel>
             </StackPanel>
            </StackPanel>
     </Grid>
