@@ -24,7 +24,8 @@
     <Grid>
        
            <StackPanel VerticalAlignment="Center">
-            <TextBlock HorizontalAlignment="Center" FontSize="20" Margin="20">Điều Chỉnh Tồn Âm Kho _ CNF</TextBlock>
+            <TextBlock HorizontalAlignment="Center" FontSize="20" Margin="10">Điều Chỉnh Tồn Âm Kho _ CNF</TextBlock>
+            <TextBlock HorizontalAlignment="Center" FontSize="10">--- hts ---</TextBlock>
             <StackPanel Orientation="Horizontal" Margin="0,5">
                 <TextBox
                     x:Name="txtTenFile"
@@ -68,7 +69,7 @@
                         Grid.Row="1" Grid.Column="0">
 
                     </CheckBox>
-                    <TextBlock Text="Kho Layout 02" 
+                    <TextBlock Text="Kho stock 02" 
                                VerticalAlignment="Center" 
                                Margin="0,5" 
                                x:Name="tenkho02"
@@ -97,7 +98,8 @@
                 </StackPanel>
                     
                 <StackPanel Margin="8">
-                    <Button x:Name="btnXuly" Click="btnXuly_Click">Xử lý dữ liệu</Button>
+                    <Button x:Name="btnXuly" Click="btnXuly_Click"
+                            IsEnabled="False">Xử lý dữ liệu</Button>
                 </StackPanel>
                 <StackPanel Margin="5">
                     <Button x:Name="btnXuatexcel" Click="btnXuatexcel_Click"

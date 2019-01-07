@@ -122,6 +122,7 @@ namespace DCTonam_cnf
                     tenfiles.Add(fileitem);
                     txtTenFile.Text += "- File " +sofile+": " + fileitem + "\n";
                     btnNapData.IsEnabled = true;
+                    btnXuly.IsEnabled = false;
                 }
             }
         }
@@ -131,7 +132,7 @@ namespace DCTonam_cnf
             napdulieu = new Thread(fc_napdulieu);
             napdulieu.IsBackground = true;
             napdulieu.Start();
-            btnNapData.IsEnabled = false; 
+            btnNapData.IsEnabled = false;
         }
         public void fc_napdulieu()
         {
@@ -410,6 +411,13 @@ namespace DCTonam_cnf
             xuatexcel(dc02_01, "02_01", ngaydieuchinh);
             xuatexcel(dc05_01, "05_01", ngaydieuchinh);
             xuatexcel(dcnhap_01, "nhap_01", ngaydieuchinh);
+            xuatexcel(dc01_02, "01_02", ngaydieuchinh);
+            xuatexcel(dc05_02, "05_02", ngaydieuchinh);
+            xuatexcel(dcnhap_02, "nhap_02", ngaydieuchinh);
+            xuatexcel(dc01_05, "01_05", ngaydieuchinh);
+            xuatexcel(dc02_05, "02_05", ngaydieuchinh);
+            xuatexcel(dcnhap_05, "nhap_05", ngaydieuchinh);
+
             lbthongbao.Visibility = Visibility.Visible;
             lbthongbao.Text = "Vừa xuất file tại đường dẫn: " + folder_copy;
         }
