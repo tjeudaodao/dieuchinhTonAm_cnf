@@ -38,15 +38,19 @@ namespace DCTonam_cnf
         List<dulieu> dc01_05;
         List<dulieu> dc02_05;
         List<dulieu> dcnhap_05;
+        List<List<dulieu>> luu_datatach = new List<List<dulieu>>();
         string ngaydieuchinh = string.Empty;
         string folder_copy = string.Empty;
+        string duongdangoc = System.AppDomain.CurrentDomain.BaseDirectory + @"\File_Xuat_Excel";
+        string duongdanfile = string.Empty;
+
         public MainWindow()
         {
             InitializeComponent();
              kho01 = new List<dulieu>();
              kho02 = new List<dulieu>();
              kho05 = new List<dulieu>();
-            Directory.CreateDirectory(System.AppDomain.CurrentDomain.BaseDirectory + @"\File_Xuat_Excel");
+            Directory.CreateDirectory(duongdangoc);
         }
         public List<string> tenfiles { get; set; }
         public string getMakho(string nguon)
@@ -405,9 +409,10 @@ namespace DCTonam_cnf
         private void btnXuatexcel_Click(object sender, RoutedEventArgs e)
         {
             ngaydieuchinh = ngaydieuchinh.Replace("/", "-");
-            folder_copy = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\DC_ton_am_" + ngaydieuchinh;
-            Directory.CreateDirectory(folder_copy);
-            
+            Directory.CreateDirectory(duongdangoc + @"\" + ngaydieuchinh);
+            folder_copy = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\DC_ton_am";
+            Directory.CreateDirectory(folder_copy + @"\" + ngaydieuchinh);
+
             xuatexcel(dc02_01, "02_01", ngaydieuchinh);
             xuatexcel(dc05_01, "05_01", ngaydieuchinh);
             xuatexcel(dcnhap_01, "nhap_01", ngaydieuchinh);
@@ -419,30 +424,69 @@ namespace DCTonam_cnf
             xuatexcel(dcnhap_05, "nhap_05", ngaydieuchinh);
 
             lbthongbao.Visibility = Visibility.Visible;
-            lbthongbao.Text = "Vừa xuất file tại đường dẫn: " + folder_copy;
+            lbthongbao.Text = "Done !!! .Vừa xuất file tại đường dẫn: " + folder_copy;
         }
         //ham xuat excel
         public void xuatexcel(List<dulieu> data, string tenfileout, string ngay)
         {
-            using(ExcelPackage ex = new ExcelPackage())
+            dequy_tachdata(data, 0);
+            int vs = 0;
+            foreach (var item in luu_datatach)
             {
-                using(ExcelWorksheet ws = ex.Workbook.Worksheets.Add("dc_ton_am_" + tenfileout))
+                vs++;
+                using (ExcelPackage ex = new ExcelPackage())
                 {
-                    if (!data.Any())
+                    using (ExcelWorksheet ws = ex.Workbook.Worksheets.Add("dc_ton_am_" + tenfileout + "_vs" + vs))
                     {
-                        return;
+                        if (!item.Any())
+                        {
+                            return;
+                        }
+                        duongdanfile = @"\"+ ngaydieuchinh + @"\" + "DC_Ton_Am_" + tenfileout + "_ngay_" + ngay + "_vs" + vs + ".xlsx";
+                        ws.Cells["A2"].LoadFromCollection(item);
+                        ws.Column(1).AutoFit();
+                        if (File.Exists(duongdangoc + duongdanfile))
+                        {
+                            File.Delete(duongdangoc + duongdanfile);
+                        }
+                        ex.SaveAs(new FileInfo(duongdangoc + duongdanfile));
+                        File.Copy(duongdangoc + duongdanfile, folder_copy + duongdanfile, true);
                     }
-                    string duongdanfilegoc = System.AppDomain.CurrentDomain.BaseDirectory + @"\File_Xuat_Excel\" + "DC_Ton_Am_" + tenfileout + "_ngay_" + ngay + ".xlsx";
-                    ws.Cells["A2"].LoadFromCollection(data);
-                    ws.Column(1).AutoFit();
-                    if (File.Exists(duongdanfilegoc))
-                    {
-                        File.Delete(duongdanfilegoc);
-                    }
-                    ex.SaveAs(new FileInfo(duongdanfilegoc));
-                    File.Copy(duongdanfilegoc, folder_copy + @"\DC_Ton_Am_" + tenfileout + "_ngay_" + ngay + ".xlsx", true);
                 }
             }
+            luu_datatach.Clear();
         }
+        //dequy de tach data khi so item > 145 ma
+        
+        public void dequy_tachdata (List<dulieu> data, int ts)
+        {
+            List<dulieu> hh_1 = new List<dulieu>();
+            int ts_1 = 0;
+            int ts_2 = ts;
+            if (data.Count() < 147)
+            {
+                for (int i = 0; i < data.Count(); i++)
+                {
+                    hh_1.Add(new dulieu(data[i].masp, data[i].soluong));
+                }
+                return;
+            }
+            for (int i = ts; i < data.Count(); i++)
+            {
+                
+                ts_1++;
+                hh_1.Add(new dulieu(data[i].masp, data[i].soluong));
+                if (ts_1 > 147)
+                {
+                    ts_2 = i + 1;
+                    break;
+                }
+            }
+            luu_datatach.Add(hh_1);
+            if (ts_1 > 147)
+            {
+                dequy_tachdata(data, ts_2);
+            }
+        } 
     }
 }
