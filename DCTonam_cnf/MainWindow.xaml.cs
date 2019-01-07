@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using MaterialDesignThemes.Wpf;
+using Microsoft.Win32;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -51,6 +52,7 @@ namespace DCTonam_cnf
              kho02 = new List<dulieu>();
              kho05 = new List<dulieu>();
             Directory.CreateDirectory(duongdangoc);
+            
         }
         public List<string> tenfiles { get; set; }
         public string getMakho(string nguon)
@@ -111,7 +113,7 @@ namespace DCTonam_cnf
         private void btnChonFile_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog chonfile = new OpenFileDialog();
-            lbthongbao.Visibility = Visibility.Hidden;
+            card_thongbao.Visibility = Visibility.Hidden;
             btnXuatexcel.Visibility = Visibility.Hidden;
             chonfile.Filter = "Mời các anh chọn file excel (*.xlsx)|*.xlsx";
             chonfile.Multiselect = true;
@@ -422,13 +424,17 @@ namespace DCTonam_cnf
             xuatexcel(dc01_05, "01_05", ngaydieuchinh);
             xuatexcel(dc02_05, "02_05", ngaydieuchinh);
             xuatexcel(dcnhap_05, "nhap_05", ngaydieuchinh);
-
-            lbthongbao.Visibility = Visibility.Visible;
-            lbthongbao.Text = "Done !!! .Vừa xuất file tại đường dẫn: " + folder_copy;
+            
+            card_thongbao.Visibility = Visibility.Visible;
+            tbnoidungthongbao.Text = "Done !!! .Vừa xuất file tại đường dẫn: " + folder_copy;
         }
         //ham xuat excel
         public void xuatexcel(List<dulieu> data, string tenfileout, string ngay)
         {
+            if (!data.Any())
+            {
+                return;
+            }
             dequy_tachdata(data, 0);
             int vs = 0;
             foreach (var item in luu_datatach)
@@ -458,7 +464,7 @@ namespace DCTonam_cnf
         }
         //dequy de tach data khi so item > 145 ma
         
-        public void dequy_tachdata (List<dulieu> data, int ts)
+        public void dequy_tachdata(List<dulieu> data, int ts)
         {
             List<dulieu> hh_1 = new List<dulieu>();
             int ts_1 = 0;
@@ -469,6 +475,7 @@ namespace DCTonam_cnf
                 {
                     hh_1.Add(new dulieu(data[i].masp, data[i].soluong));
                 }
+                luu_datatach.Add(hh_1);
                 return;
             }
             for (int i = ts; i < data.Count(); i++)
@@ -487,6 +494,7 @@ namespace DCTonam_cnf
             {
                 dequy_tachdata(data, ts_2);
             }
-        } 
+        }
+        
     }
 }

@@ -101,14 +101,22 @@
                     <Button x:Name="btnXuly" Click="btnXuly_Click"
                             IsEnabled="False">Xử lý dữ liệu</Button>
                 </StackPanel>
-                <StackPanel Margin="5">
+                <StackPanel Margin="8">
                     <Button x:Name="btnXuatexcel" Click="btnXuatexcel_Click"
                             Visibility="Hidden">Tạo file Excel</Button>
-                    <TextBlock x:Name="lbthongbao" 
-                           Visibility="Hidden" 
-                           Margin="10"
-                           HorizontalAlignment="Center"></TextBlock>
                 </StackPanel>
+                <materialDesign:Card
+                      Background="#F34949"
+                      Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                      Padding="8"
+                      UniformCornerRadius="6"
+                        x:Name="card_thongbao"
+                    Visibility="Hidden">
+                    <TextBlock
+                        TextWrapping="Wrap"
+                        x:Name="tbnoidungthongbao">
+                    </TextBlock>
+                </materialDesign:Card>
             </StackPanel>
            </StackPanel>
     </Grid>
