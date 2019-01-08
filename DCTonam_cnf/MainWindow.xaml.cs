@@ -72,24 +72,24 @@ namespace DCTonam_cnf
             return kq;
         }
         //check control kho hang
-        public void checkControl(string makho, string ngayxuatton)
+        public void checkControl(string makho, string ngayxuatton, string tenkho)
         {
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 if (makho == "01")
                 {
                     checkKho01.IsChecked = true;
-                    tenkho01.Text = "Kho layout 01 _ Ngày: " + ngayxuatton; 
+                    tenkho01.Text = "Kho layout 01 _ "+ tenkho +" _Ngày: " + ngayxuatton; 
                 }
                 else if (makho == "02")
                 {
                     checkKho02.IsChecked = true;
-                    tenkho02.Text = "Kho stock 02 _ Ngày: " + ngayxuatton;
+                    tenkho02.Text = "Kho stock 02 _ "+ tenkho + " _Ngày: " + ngayxuatton;
                 }
                 else if (makho == "05")
                 {
                     checkKho05.IsChecked = true;
-                    tenkho05.Text = "Kho trung chuyển 05 _ Ngày: " + ngayxuatton;
+                    tenkho05.Text = "Kho trung chuyển 05 _" + tenkho + " _Ngày: " + ngayxuatton;
                 }
             }));
         }
@@ -183,7 +183,7 @@ namespace DCTonam_cnf
                             {
                                 kho05 = dltam;
                             }
-                            checkControl(makho, layngay.Value);
+                            checkControl(makho, layngay.Value, laytenkho.Value);
                             ngaydieuchinh = layngay.Value;
                         }
                     }
@@ -469,7 +469,7 @@ namespace DCTonam_cnf
             List<dulieu> hh_1 = new List<dulieu>();
             int ts_1 = 0;
             int ts_2 = ts;
-            if (data.Count() < 147)
+            if (data.Count() < 297)
             {
                 for (int i = 0; i < data.Count(); i++)
                 {
@@ -483,14 +483,14 @@ namespace DCTonam_cnf
                 
                 ts_1++;
                 hh_1.Add(new dulieu(data[i].masp, data[i].soluong));
-                if (ts_1 > 147)
+                if (ts_1 > 297)
                 {
                     ts_2 = i + 1;
                     break;
                 }
             }
             luu_datatach.Add(hh_1);
-            if (ts_1 > 147)
+            if (ts_1 > 297)
             {
                 dequy_tachdata(data, ts_2);
             }
