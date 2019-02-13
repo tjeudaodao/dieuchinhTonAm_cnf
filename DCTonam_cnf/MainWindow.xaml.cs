@@ -220,7 +220,7 @@ namespace DCTonam_cnf
             //dc tu 02 vao 01
             foreach (var rs in kq1_2)
             {
-                if ((rs.soluong1 * (-1)) < rs.soluong2)
+                if ((rs.soluong1 * (-1)) <= rs.soluong2)
                 {
                     dc02_01.Add(new dulieu(rs.masp, rs.soluong1 * (-1)));
                     kho012.Add(new dulieu(rs.masp, 0));
@@ -250,7 +250,7 @@ namespace DCTonam_cnf
             List<dulieu> kho015 = new List<dulieu>();
             foreach (var rs in kq1_5)
             {
-                if ((rs.soluong1 * (-1)) < rs.soluong2)
+                if ((rs.soluong1 * (-1)) <= rs.soluong2)
                 {
                     dc05_01.Add(new dulieu(rs.masp, rs.soluong1 * (-1)));
                     kho015.Add(new dulieu(rs.masp, 0));
@@ -287,7 +287,7 @@ namespace DCTonam_cnf
             //dc tu 01 vao 02
             foreach (var rs in kq2_1)
             {
-                if ((rs.soluong1 * (-1)) < rs.soluong2)
+                if ((rs.soluong1 * (-1)) <= rs.soluong2)
                 {
                     dc01_02.Add(new dulieu(rs.masp, rs.soluong1 * (-1)));
                     kho021.Add(new dulieu(rs.masp, 0));
@@ -317,7 +317,7 @@ namespace DCTonam_cnf
             List<dulieu> kho025 = new List<dulieu>();
             foreach (var rs in kq2_5)
             {
-                if ((rs.soluong1 * (-1)) < rs.soluong2)
+                if ((rs.soluong1 * (-1)) <= rs.soluong2)
                 {
                     dc05_02.Add(new dulieu(rs.masp, rs.soluong1 * (-1)));
                     kho025.Add(new dulieu(rs.masp, 0));
@@ -355,7 +355,7 @@ namespace DCTonam_cnf
             //dc tu 01 vao 05
             foreach (var rs in kq5_1)
             {
-                if ((rs.soluong1 * (-1)) < rs.soluong2)
+                if ((rs.soluong1 * (-1)) <= rs.soluong2)
                 {
                     dc01_05.Add(new dulieu(rs.masp, rs.soluong1 * (-1)));
                     kho051.Add(new dulieu(rs.masp, 0));
@@ -385,7 +385,7 @@ namespace DCTonam_cnf
             List<dulieu> kho052 = new List<dulieu>();
             foreach (var rs in kq2_5)
             {
-                if ((rs.soluong1 * (-1)) < rs.soluong2)
+                if ((rs.soluong1 * (-1)) <= rs.soluong2)
                 {
                     dc02_05.Add(new dulieu(rs.masp, rs.soluong1 * (-1)));
                     kho052.Add(new dulieu(rs.masp, 0));
@@ -435,7 +435,7 @@ namespace DCTonam_cnf
             {
                 return;
             }
-            dequy_tachdata(data, 0);
+            dequy_tachdata(data, 0); // sau khi goi ham nay se co du lieu tai bien 'luu_datatach'
             int vs = 0;
             foreach (var item in luu_datatach)
             {
@@ -448,9 +448,16 @@ namespace DCTonam_cnf
                         {
                             return;
                         }
-                        duongdanfile = @"\"+ ngaydieuchinh + @"\" + "DC_Ton_Am_" + tenfileout + "_ngay_" + ngay + "_vs" + vs + ".xlsx";
+                        
                         ws.Cells["A2"].LoadFromCollection(item);
                         ws.Column(1).AutoFit();
+                        int tongma = 0;
+                        int dongcuoi = ws.Dimension.End.Row;
+                        for (int i = 2; i <= dongcuoi; i++)
+                        {
+                            tongma = tongma + Convert.ToInt32(ws.Cells[i, 2].Value.ToString());
+                        }
+                        duongdanfile = @"\" + ngaydieuchinh + @"\" + "DC_Ton_Am_" + tenfileout + "= " + tongma + "sp_ngay_" + ngay + "_vs" + vs + ".xlsx";
                         if (File.Exists(duongdangoc + duongdanfile))
                         {
                             File.Delete(duongdangoc + duongdanfile);
@@ -462,7 +469,7 @@ namespace DCTonam_cnf
             }
             luu_datatach.Clear();
         }
-        //dequy de tach data khi so item > 145 ma
+        //dequy de tach data khi so item > 297 ma
         
         public void dequy_tachdata(List<dulieu> data, int ts)
         {
